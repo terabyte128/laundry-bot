@@ -11,12 +11,18 @@ class Machine(db.Model):
     loads = db.relationship("Load", backref="machine", lazy="dynamic")
 
 
+class Roommate(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text, nullable=False)
+    loads = db.relationship("Load", backref="roommate", lazy="dynamic")
+
+
 class Load(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     machine_id = db.Column(
         db.Integer, db.ForeignKey("machine.id"), nullable=False
     )
-    owner = db.Column(db.Text)
+    roommate_id = db.Column(db.Integer, db.ForeignKey("roommate.id"))
     cycle_number = db.Column(db.Integer, nullable=False, default=1)
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime)

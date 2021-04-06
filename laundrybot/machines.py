@@ -95,8 +95,12 @@ def update_machine(
                 db.session.add(load)
 
         # start a new load
-        # TODO mark the new load as the same person who finished last_washer_load
         new_load = Load(machine_id=machine.id, start_time=current_ts.datetime)
+
+        # mark new load as same person as old load
+        if last_washer_load and last_washer_load.roommate:
+            new_load.roommate = last_washer_load.roommate
+
         db.session.add(new_load)
 
     # the machine just finished
