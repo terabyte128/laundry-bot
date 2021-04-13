@@ -19,12 +19,12 @@ def update_readings():
 
     for machine, value in readings.items():
         if not value:
-            errors[machine] = "value was not provided"
+            errors[machine.name] = "value was not provided"
         else:
             try:
                 readings[machine] = float(value)
             except ValueError:
-                errors[machine] = "value is not a number"
+                errors[machine.name] = "value is not a number"
 
     if len(errors) > 0:
         return jsonify(errors), 200

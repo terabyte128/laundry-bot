@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, current_app
 from flask_migrate import Migrate
 
@@ -8,6 +10,7 @@ from laundrybot.blueprints import api
 config = {
     "SQLALCHEMY_DATABASE_URI": "sqlite:///db.sqlite3",
     "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+    "IDLE_TIMEOUT": float(os.environ.get("IDLE_TIMEOUT", 300)),
 }
 
 
