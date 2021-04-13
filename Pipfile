@@ -6,9 +6,9 @@ name = "pypi"
 [packages]
 flask = "*"
 gunicorn = "*"
-arrow = "*"
 attrs = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
+flake8 = "*"
 
 [dev-packages]

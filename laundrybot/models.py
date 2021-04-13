@@ -14,6 +14,7 @@ class Machine(db.Model):
 class Roommate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
+    telegram_id = db.Column(db.Text)
     loads = db.relationship("Load", backref="roommate", lazy="dynamic")
 
 
@@ -23,7 +24,7 @@ class Load(db.Model):
         db.Integer, db.ForeignKey("machine.id"), nullable=False
     )
     roommate_id = db.Column(db.Integer, db.ForeignKey("roommate.id"))
-    cycle_number = db.Column(db.Integer, nullable=False, default=1)
+    last_change_time = db.Column(db.DateTime, nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime)
     collected = db.Column(db.Boolean, nullable=False, default=False)

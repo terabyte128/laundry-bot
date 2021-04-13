@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
+from datetime import datetime
 
 from laundrybot.models import db, Machine, Roommate, Load
-from laundrybot.util import local_time
 from laundrybot.machines import MachineData, MachineType, update_machine
 from laundrybot.responses import build_response, build_full_response
 
@@ -29,7 +29,7 @@ def update_readings():
     if len(errors) > 0:
         return jsonify(errors), 200
 
-    ts = local_time()
+    ts = datetime.now()
 
     old_values = {}
 
@@ -46,7 +46,7 @@ def update_readings():
 
         # then update them
         machine.last_reading = value
-        machine.updated_at = ts.datetime
+        machine.updated_at = ts
 
         db.session.add(machine)
 
@@ -73,18 +73,23 @@ def push_button():
 
     if last_load and not last_load.collected:
         if last_load.roommate != roommate:
-            # link the most recently started load to the person who pushed the button
+            # link the most recently started load to the person who pushed
+            # the button
             current_app.logger.info(
                 f"linking load from {last_load.start_time} to {roommate.name}"
             )
             last_load.roommate = roommate
 
         else:
-            # mark the load as collected
+            # mark the load as finished and collected
+            ts = last_load.end_time or datetime.now()
+
             current_app.logger.info(
-                f"marking load by {roommate.name} from {last_load.start_time} as collected"
+                f"marking load by {roommate.name} from {last_load.start_time}"
+                f"as collected"
             )
             last_load.collected = True
+            last_load.end_time = ts
 
         db.session.add(last_load)
 
@@ -96,7 +101,7 @@ def push_button():
             machine_id=MachineData.WASHER.value.id,
             roommate=roommate,
             cycle_number=0,
-            start_time=local_time().datetime,
+            start_time=datetime.now(),
         )
         current_app.logger.info(
             f"creating new washer load {load.start_time} for {roommate.name}"

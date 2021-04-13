@@ -4,7 +4,6 @@ import enum
 from flask import current_app
 
 from laundrybot.models import db, Load
-from laundrybot.util import local_from_ts, local_time
 
 
 @attr.s(frozen=True)
@@ -49,6 +48,9 @@ def update_machine(
             )
         )
     ):
+
+        # TODO if local_time() - start_time.
+
         current_app.logger.info(
             f"transitioning {last_load_this_machine.start_time} to cycle "
             f"{last_load_this_machine.cycle_number + 1}"
@@ -113,7 +115,7 @@ def update_machine(
             last_load_this_machine.end_time = current_ts.datetime
 
             current_app.logger.info(
-                f"load from {local_from_ts(last_load_this_machine.start_time)} is complete"
+                f"load from {last_load_this_machine.start_time} is complete"
             )
 
             # TODO bug the person whose load just finished
